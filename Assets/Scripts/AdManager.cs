@@ -42,17 +42,23 @@ public class AdManager : MonoBehaviour
         RequestBanner();
 
         interstitialAd = new InterstitialAd(fullscreenUnitId);
-        AdRequest request = new AdRequest.Builder().AddTestDevice("d9ac1fc0b431150e881264fd73db780f").Build();
+        AdRequest request = new AdRequest.Builder().Build();
         
         interstitialAd.LoadAd(request);
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode1)
     {
-        //if (scene.name != "MainMenu")
-        //{
-        //    bannerView.Destroy();
-        //}
+        if (scene.name != "MainMenu")
+        {
+            bannerView.Hide();
+            Debug.Log("Hide AD banner");
+        }
+        else
+        {
+            RequestBanner();
+            Debug.Log("Show AD banner");
+        }
     }
 
     public void RequestFullscreenAd()
@@ -70,6 +76,8 @@ public class AdManager : MonoBehaviour
     {
         Debug.Log("Request banner!");
 
+        if (bannerView != null) bannerView.Destroy();
+
         // Create a 320x50 banner at the top of the screen.
         bannerView = new BannerView(bannerUnitId, AdSize.Banner, AdPosition.Top);
 
@@ -85,7 +93,7 @@ public class AdManager : MonoBehaviour
         bannerView.OnAdLeavingApplication += HandleOnAdLeavingApplication;
 
         // Create an empty ad request.
-        AdRequest request = new AdRequest.Builder().AddTestDevice("d9ac1fc0b431150e881264fd73db780f").Build();
+        AdRequest request = new AdRequest.Builder().Build();
 
         // Load the banner with the request.
         bannerView.LoadAd(request);

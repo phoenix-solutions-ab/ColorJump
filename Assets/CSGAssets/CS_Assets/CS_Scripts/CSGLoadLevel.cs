@@ -83,7 +83,13 @@ namespace ColorSwitchGame
 		/// <param name="levelName">Level name.</param>
 		public void LoadLevel()
 		{
-			delayTime = Time.unscaledTime;
+            if(string.IsNullOrEmpty(levelName))
+            {
+                levelName = LevelManager.instance.selectedButton.GetComponent<LevelButton>().Level;
+            }
+
+
+            delayTime = Time.unscaledTime;
 
 			// Execute the function after a delay
 			StartCoroutine("ExecuteLoadLevel");
