@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LevelManager : MonoBehaviour
 {
     public static LevelManager instance;
 
-    public Button[] levelButtons;
+    private Button[] levelButtons;
 
     public Button selectedButton;
     private Color selectedColor;
@@ -23,10 +25,10 @@ public class LevelManager : MonoBehaviour
         }
         else
         {
-            Destroy(gameObject);
+            Destroy(this);
         }
 
-        DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(this);
     }
 
     internal void SetSelectedButton(Button btn)
@@ -43,12 +45,34 @@ public class LevelManager : MonoBehaviour
         notSelectedColor = Color.white;
         lockedColor = new Color(0.5f, 0.5f, 0.5f, 1);
 
-        if (levelButtons.Length > 0)
-        {
-            selectedButton = levelButtons[0];
+        SceneManager.sceneLoaded += OnSceneLoaded;
 
-            FixColors();
+        FixLevelButtons();
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode1)
+    {
+        if (scene.name == "MainMenuLight" && (levelButtons.Length <= 0 || levelButtons[0] == null))
+        {
+            FixLevelButtons();
         }
+    }
+
+    private void FixLevelButtons()
+    {
+        var levelbtns = FindObjectsOfType<LevelButton>();
+        levelButtons = new Button[levelbtns.Length];
+
+        levelbtns = levelbtns.OrderBy(b => b.Order).ToArray();
+
+        for (int i = 0; i < levelbtns.Length; i++)
+        {
+            levelButtons[i] = levelbtns[i].GetComponent<Button>();
+        }
+
+        selectedButton = levelButtons[0];
+
+        FixColors();
     }
 
     private void FixColors()

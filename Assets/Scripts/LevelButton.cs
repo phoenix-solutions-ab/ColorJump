@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class LevelButton : MonoBehaviour
 {
     public string Level;
+    public int Order;
 
     [InspectorName("Is unlocked")]
     public bool isUnlocked;
