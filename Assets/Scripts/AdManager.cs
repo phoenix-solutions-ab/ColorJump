@@ -18,6 +18,8 @@ public class AdManager : MonoBehaviour
     private BannerView bannerView;
     private InterstitialAd interstitialAd;
 
+    public RewardBasedVideoAd rewardBasedVideo;
+
     private void Awake()
     {
         if (instance == null)
@@ -45,6 +47,35 @@ public class AdManager : MonoBehaviour
         AdRequest request = new AdRequest.Builder().Build();
         
         interstitialAd.LoadAd(request);
+
+        this.rewardBasedVideo = RewardBasedVideoAd.Instance;
+        this.rewardBasedVideo.OnAdRewarded += HandleRewardBasedVideoRewarded;
+    }
+
+    public void RequestRewardBasedVideo(string adUnitId)
+    {
+        // Create an empty ad request.
+        AdRequest request = new AdRequest.Builder().Build();
+        // Load the rewarded video ad with the request.
+        this.rewardBasedVideo.LoadAd(request, adUnitId);
+    }
+
+    public void HandleRewardBasedVideoRewarded(object sender, Reward args)
+    {
+        string level = args.Type;
+        double amount = args.Amount;
+        
+        if(amount > 0)
+        {
+            PlayerPrefs.SetInt("UNLOCKED_Play" + level, 1);
+
+            //We need to reinitialize the locked levels...
+            LevelButton[] btns = FindObjectsOfType<LevelButton>();
+            for (int i = 0; i < btns.Length; i++)
+            {
+                btns[i].InitUnlocked();
+            }
+        }
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode1)
