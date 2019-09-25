@@ -58,7 +58,7 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    private void FixLevelButtons()
+    public void FixLevelButtons()
     {
         var levelbtns = FindObjectsOfType<LevelButton>();
         levelButtons = new Button[levelbtns.Length];
@@ -82,6 +82,12 @@ public class LevelManager : MonoBehaviour
             if(levelButtons[i].GetComponent<LevelButton>().isUnlocked)
             {
                 levelButtons[i].GetComponent<Image>().color = notSelectedColor;
+                levelButtons[i].transform.GetChild(0).GetComponent<Image>().color = new Color(1, 1, 1, 1f);
+            }
+            else if(levelButtons[i].GetComponent<LevelButton>().isDisabled)
+            {
+                levelButtons[i].GetComponent<Image>().color = new Color(0, 0, 0, 0);
+                levelButtons[i].transform.GetChild(0).GetComponent<Image>().color = new Color(0, 0, 0, 0);
             }
             else
             {

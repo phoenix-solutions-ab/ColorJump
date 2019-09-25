@@ -14,6 +14,7 @@ public class LevelButton : MonoBehaviour
 
     [InspectorName("Is unlocked")]
     public bool isUnlocked;
+    public bool isDisabled;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,6 +27,8 @@ public class LevelButton : MonoBehaviour
         {
             isUnlocked = PlayerPrefs.GetInt("UNLOCKED_" + Level, 0) > 0;
         }
+
+        LevelManager.instance.FixLevelButtons();
     }
 
     public void SelectButton()

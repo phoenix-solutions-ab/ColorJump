@@ -45,19 +45,27 @@ public class AdManager : MonoBehaviour
 
         interstitialAd = new InterstitialAd(fullscreenUnitId);
         AdRequest request = new AdRequest.Builder().Build();
-        
         interstitialAd.LoadAd(request);
-
-        this.rewardBasedVideo = RewardBasedVideoAd.Instance;
-        this.rewardBasedVideo.OnAdRewarded += HandleRewardBasedVideoRewarded;
     }
 
     public void RequestRewardBasedVideo(string adUnitId)
     {
+        this.rewardBasedVideo = RewardBasedVideoAd.Instance;
+        this.rewardBasedVideo.OnAdRewarded += HandleRewardBasedVideoRewarded;
+        this.rewardBasedVideo.OnAdLoaded += RewardBasedVideo_OnAdLoaded;
+
         // Create an empty ad request.
         AdRequest request = new AdRequest.Builder().Build();
         // Load the rewarded video ad with the request.
         this.rewardBasedVideo.LoadAd(request, adUnitId);
+    }
+
+    private void RewardBasedVideo_OnAdLoaded(object sender, EventArgs e)
+    {
+        if (rewardBasedVideo.IsLoaded())
+        {
+            rewardBasedVideo.Show();
+        }
     }
 
     public void HandleRewardBasedVideoRewarded(object sender, Reward args)
